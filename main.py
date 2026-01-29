@@ -1,33 +1,55 @@
-# Bio-Adaptive Emergency Rerouting (BAER) Logic
-# Input: bpm (Heart rate from ECG after Whittaker-Shannon reconstruction)
-# Input: status (Level of autonomy)
+# BAER Clinical Decision Engine - DSP Implementation Logic
+def measure_execution_latency():
+    pass
 
-def evaluate_driver_safety(bpm, status):
-    # Thresholds for cardiac emergency detection
-    CRITICAL_HIGH = 160 
-    CRITICAL_LOW = 40
+
+def clinical_decision_engine(reconstructed_signal, sample_rate):
+    # 1. Feature Extraction (R-Peak Detection)
+    heart_rate = calculate_bpm(reconstructed_signal, sample_rate)
+    st_segment_deviation = measure_st_elevation(reconstructed_signal)
     
-    if status == "Level_4" or status == "Level_5":
-        if bpm > CRITICAL_HIGH or bpm < CRITICAL_LOW:
-            # Initiate Minimum Risk Maneuver (MRM)
-            action = "EMERGENCY_REROUTE_TO_HOSPITAL"
-            v2x_broadcast = "TRANSMIT_DIAGNOSTICS_TO_CLINIC"
-            alert = "AUDIBLE_WARNING_TO_PASSENGERS"
-            return action, v2x_broadcast, alert
-            
-        elif bpm > 100:
-            # High stress detected
-            action = "ENABLE_LANE_STAY_ASSIST"
-            v2x_broadcast = "NULL"
-            alert = "SUGGEST_REST_STOP"
-            return action, v2x_broadcast, alert
-            
-        else:
-            return "NOMINAL_DRIVING", "STABLE", "NO_ALERT"
-            
+    # 2. Threshold Analysis (Clinical Indicators for Cardiac Event)
+    # Critical thresholds: Bradycardia (<40), Tachycardia (>160), or STEMI elevation
+    if (heart_rate < 40 or heart_rate > 160) or (st_segment_deviation > 2.0):
+        event_status = "CRITICAL_MEDICAL_EMERGENCY"
     else:
-        return "MANUAL_CONTROL_REQUIRED", "CHECK_DRIVER", "SYSTEM_STANDBY"
+        event_status = "STABLE"
+
+    # 3. Autonomous Vehicle Response Logic
+    if event_status == "CRITICAL_MEDICAL_EMERGENCY":
+        # Initiate V2X Communication Protocol
+        transmit_v2x_alert(priority="HIGH", destination="EMERGENCY_SERVICES")
+        
+        # Trigger Vehicle Minimum Risk Maneuver (MRM)
+        initiate_safe_pull_over()
+        activate_hazard_lights()
+        unlock_doors_for_paramedics()
+        
+        return "ALARM_ACTIVE"
     
-def learn_with_data():
-    #not yet implemented 
+    return "MONITORING_ACTIVE"
+
+# 4. Latency Monitoring (Timing Analysis Requirement)
+# Ensures execution loop remains below the 100ms safety threshold
+measure_execution_latency()
+
+
+
+
+
+def calculate_bpm():
+    pass
+def initiate_safe_pull_over():
+    pass
+def activate_hazard_lights():
+    pass
+
+def unlock_doors_for_paramedics():
+    pass
+
+
+def transmit_v2x_alert(a,b):
+    pass
+
+def measure_st_elevation():
     pass

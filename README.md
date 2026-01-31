@@ -1,2 +1,2 @@
 An emergency reoruting decision logic.
-Thanks.
+for research project
